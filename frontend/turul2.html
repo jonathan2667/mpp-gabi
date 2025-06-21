@@ -272,7 +272,7 @@
             </div>
             
             <div class="vote-percentage" id="bobPercentage">50.0%</div>
-            <div class="vote-count" id="bobVotes">5000 votes</div>
+            <div class="vote-count" id="bobVotes">100 votes</div>
             
             <h3 style="margin-bottom: 15px;">📰 Latest News</h3>
             <div class="news-board" id="bobNews">
@@ -287,7 +287,7 @@
                 <div class="switch-handle"></div>
             </div>
             <div class="live-stats">
-                <div class="total-votes" id="totalVotes">10,000 Total Voters</div>
+                <div class="total-votes" id="totalVotes">200 Votes Counted</div>
                 <div class="voting-speed" id="votingSpeed">Voting in progress...</div>
             </div>
         </div>
@@ -301,7 +301,7 @@
             </div>
             
             <div class="vote-percentage" id="alicePercentage">50.0%</div>
-            <div class="vote-count" id="aliceVotes">5000 votes</div>
+            <div class="vote-count" id="aliceVotes">100 votes</div>
             
             <h3 style="margin-bottom: 15px;">📰 Latest News</h3>
             <div class="news-board" id="aliceNews">
@@ -312,10 +312,9 @@
 
     <script>
         let currentInfluence = 'bob'; // bob or alice
-        let bobVotes = 5000;
-        let aliceVotes = 5000;
+        let bobVotes = 100;
+        let aliceVotes = 100;
         let totalVoters = 10000;
-        let votingActive = true;
         
         // News data
         const newsData = {
@@ -404,31 +403,27 @@
         }
         
         function updateVotes() {
-            if (!votingActive) return;
-            
-            // Simulate voting based on current influence
-            const remainingVoters = totalVoters - bobVotes - aliceVotes;
-            if (remainingVoters <= 0) {
-                votingActive = false;
-                document.getElementById('votingSpeed').textContent = 'Voting completed!';
-                return;
-            }
-            
-            // Add votes based on influence (more likely to vote for influenced candidate)
-            const votesToAdd = Math.min(Math.floor(Math.random() * 50) + 10, remainingVoters);
+            // Continuous voting simulation - always add 1-3 votes
+            const votesToAdd = Math.floor(Math.random() * 3) + 1;
             
             if (currentInfluence === 'bob') {
-                // 70% chance for Bob, 30% for Alice when Bob is influenced
-                const bobNewVotes = Math.floor(votesToAdd * (0.7 + Math.random() * 0.2));
-                const aliceNewVotes = votesToAdd - bobNewVotes;
-                bobVotes += bobNewVotes;
-                aliceVotes += aliceNewVotes;
+                // When Bob is favored, he gets more votes (80% chance)
+                for (let i = 0; i < votesToAdd; i++) {
+                    if (Math.random() < 0.8) {
+                        bobVotes++;
+                    } else {
+                        aliceVotes++;
+                    }
+                }
             } else {
-                // 70% chance for Alice, 30% for Bob when Alice is influenced
-                const aliceNewVotes = Math.floor(votesToAdd * (0.7 + Math.random() * 0.2));
-                const bobNewVotes = votesToAdd - aliceNewVotes;
-                bobVotes += bobNewVotes;
-                aliceVotes += aliceNewVotes;
+                // When Alice is favored, she gets more votes (80% chance)
+                for (let i = 0; i < votesToAdd; i++) {
+                    if (Math.random() < 0.8) {
+                        aliceVotes++;
+                    } else {
+                        bobVotes++;
+                    }
+                }
             }
             
             // Update display
@@ -440,7 +435,7 @@
             document.getElementById('alicePercentage').textContent = `${alicePercentage}%`;
             document.getElementById('bobVotes').textContent = `${bobVotes.toLocaleString()} votes`;
             document.getElementById('aliceVotes').textContent = `${aliceVotes.toLocaleString()} votes`;
-            document.getElementById('totalVotes').textContent = `${totalCounted.toLocaleString()} / ${totalVoters.toLocaleString()} Votes Counted`;
+            document.getElementById('totalVotes').textContent = `${totalCounted.toLocaleString()} Votes Counted`;
             document.getElementById('votingSpeed').textContent = `+${votesToAdd} votes/second`;
             
             // Update winner indicators
