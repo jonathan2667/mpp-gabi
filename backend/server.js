@@ -233,6 +233,11 @@ app.get('/results', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/results.html'));
 });
 
+// Serve news page
+app.get('/news', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/news.html'));
+});
+
 io.on('connection', (socket) => {
     console.log('✅ Client connected:', socket.id);
     socket.emit('update', { candidates, chart: getPartyCounts() });

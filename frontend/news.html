@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - Jonathan's Political Candidates 2024</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .navbar {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .navbar-brand {
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            font-weight: 500;
+        }
+        .navbar-nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .navbar-nav a.active {
+            background: #3498db;
+        }
+        
+        .news-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .news-article {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .news-article:hover {
+            transform: translateY(-5px);
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+        }
+        
+        .news-content {
+            padding: 25px;
+        }
+        
+        .news-category {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+        
+        .news-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            line-height: 1.3;
+        }
+        
+        .news-meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .news-excerpt {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .news-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .news-tag {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .breaking-news {
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .breaking-news .news-category {
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .trending-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .trending-title {
+            color: #2c3e50;
+            margin: 0 0 20px 0;
+            font-size: 1.5em;
+        }
+        
+        .trending-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .trending-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .trending-item:last-child {
+            border-bottom: none;
+        }
+        
+        .trending-number {
+            background: #3498db;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .trending-text {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🗳️ Jonathan's Political Candidates 2024</a>
+            <ul class="navbar-nav">
+                <li><a href="/">🏠 Candidates</a></li>
+                <li><a href="/news" class="active">📰 News</a></li>
+                <li><a href="/login">👤 Login</a></li>
+                <li><a href="/vote">🗳️ Vote</a></li>
+                <li><a href="/results">📊 Results</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="news-container">
+            <header class="header" style="text-align: center; margin-bottom: 30px;">
+                <h1>📰 Jonathan's Political News</h1>
+                <p class="subtitle">Latest updates and stories from the 2024 election campaign</p>
+            </header>
+            
+            <div class="trending-section">
+                <h3 class="trending-title">🔥 Trending Now</h3>
+                <ul class="trending-list">
+                    <li class="trending-item">
+                        <div class="trending-number">1</div>
+                        <div class="trending-text">Elena Popescu leads in latest polls with environmental agenda</div>
+                    </li>
+                    <li class="trending-item">
+                        <div class="trending-number">2</div>
+                        <div class="trending-text">Mihai Ionescu announces major economic reform plan</div>
+                    </li>
+                    <li class="trending-item">
+                        <div class="trending-number">3</div>
+                        <div class="trending-text">Ana Georgescu calls for justice system overhaul</div>
+                    </li>
+                    <li class="trending-item">
+                        <div class="trending-number">4</div>
+                        <div class="trending-text">Voting turnout expected to reach record highs</div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="news-grid">
+                <article class="news-article breaking-news">
+                    <div class="news-image">🚨</div>
+                    <div class="news-content">
+                        <span class="news-category">Breaking</span>
+                        <h2 class="news-title">Elena Popescu Unveils Comprehensive Climate Action Plan</h2>
+                        <div class="news-meta">📅 Today, 2:30 PM • By Political Desk</div>
+                        <p class="news-excerpt">
+                            PDL candidate Elena Popescu announced her ambitious climate action plan today, promising carbon neutrality by 2030. The experienced politician outlined specific measures including renewable energy investments and green job creation programs.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Climate</span>
+                            <span class="news-tag">PDL</span>
+                            <span class="news-tag">Environment</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">💼</div>
+                    <div class="news-content">
+                        <span class="news-category">Economy</span>
+                        <h2 class="news-title">Mihai Ionescu Proposes Digital Innovation Hub</h2>
+                        <div class="news-meta">📅 Yesterday, 4:15 PM • By Economic Reporter</div>
+                        <p class="news-excerpt">
+                            Young entrepreneur and PSD candidate Mihai Ionescu revealed plans for a national digital innovation hub. The proposal includes startup incubators, tech education programs, and partnerships with international companies.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Technology</span>
+                            <span class="news-tag">PSD</span>
+                            <span class="news-tag">Innovation</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">⚖️</div>
+                    <div class="news-content">
+                        <span class="news-category">Justice</span>
+                        <h2 class="news-title">Ana Georgescu: "Justice System Needs Fundamental Reform"</h2>
+                        <div class="news-meta">📅 Yesterday, 11:00 AM • By Legal Correspondent</div>
+                        <p class="news-excerpt">
+                            Former prosecutor and USR candidate Ana Georgescu called for sweeping reforms to the justice system. Her proposals include anti-corruption measures, judicial independence, and streamlined court procedures.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Justice</span>
+                            <span class="news-tag">USR</span>
+                            <span class="news-tag">Reform</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">🏛️</div>
+                    <div class="news-content">
+                        <span class="news-category">Politics</span>
+                        <h2 class="news-title">Gheorghe Marinescu Focuses on Healthcare Infrastructure</h2>
+                        <div class="news-meta">📅 2 days ago, 9:30 AM • By Health Reporter</div>
+                        <p class="news-excerpt">
+                            Veteran politician Gheorghe Marinescu from PNL outlined his healthcare vision, emphasizing hospital modernization, medical equipment upgrades, and increased funding for rural healthcare facilities.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Healthcare</span>
+                            <span class="news-tag">PNL</span>
+                            <span class="news-tag">Infrastructure</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">🌱</div>
+                    <div class="news-content">
+                        <span class="news-category">Environment</span>
+                        <h2 class="news-title">Carmen Stanescu Champions Sustainable Agriculture</h2>
+                        <div class="news-meta">📅 3 days ago, 3:45 PM • By Environmental Writer</div>
+                        <p class="news-excerpt">
+                            Environmental scientist Carmen Stanescu from AUR presented her sustainable agriculture initiative. The plan includes organic farming incentives, soil conservation programs, and support for local farmers.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Agriculture</span>
+                            <span class="news-tag">AUR</span>
+                            <span class="news-tag">Sustainability</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">📊</div>
+                    <div class="news-content">
+                        <span class="news-category">Election</span>
+                        <h2 class="news-title">Voter Registration Reaches All-Time High</h2>
+                        <div class="news-meta">📅 4 days ago, 1:20 PM • By Election Commission</div>
+                        <p class="news-excerpt">
+                            The Central Election Bureau reports record-breaking voter registration numbers for the 2024 elections. Youth participation has increased by 40% compared to previous elections, signaling high civic engagement.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Voting</span>
+                            <span class="news-tag">Statistics</span>
+                            <span class="news-tag">Youth</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">🎯</div>
+                    <div class="news-content">
+                        <span class="news-category">Campaign</span>
+                        <h2 class="news-title">Final Week: Candidates Intensify Campaign Efforts</h2>
+                        <div class="news-meta">📅 5 days ago, 6:00 PM • By Campaign Tracker</div>
+                        <p class="news-excerpt">
+                            As the election approaches, all candidates are making final pushes to reach voters. Town halls, debates, and public appearances have been scheduled across the country in the campaign's final stretch.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Campaign</span>
+                            <span class="news-tag">Debates</span>
+                            <span class="news-tag">Final Week</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-article">
+                    <div class="news-image">🔐</div>
+                    <div class="news-content">
+                        <span class="news-category">Security</span>
+                        <h2 class="news-title">Enhanced Security Measures for Election Day</h2>
+                        <div class="news-meta">📅 1 week ago, 10:15 AM • By Security Analyst</div>
+                        <p class="news-excerpt">
+                            Election authorities have announced comprehensive security protocols for voting day. Digital voting systems have been tested extensively, and CNP verification processes ensure election integrity.
+                        </p>
+                        <div class="news-tags">
+                            <span class="news-tag">Security</span>
+                            <span class="news-tag">CNP</span>
+                            <span class="news-tag">Integrity</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
