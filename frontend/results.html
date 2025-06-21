@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - Political Voting System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .results-summary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .results-summary h2 {
+            margin: 0 0 15px 0;
+            font-size: 2.5em;
+        }
+        
+        .vote-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e1e8ed;
+        }
+        
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #3498db;
+            margin: 0;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .results-chart {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 1.8em;
+        }
+        
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .result-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            transition: transform 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        .result-item.winner {
+            border-color: #f1c40f;
+            background: linear-gradient(135deg, #fff9e6, #ffffff);
+        }
+        
+        .result-position {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .result-position.first {
+            color: #f1c40f;
+        }
+        
+        .result-position.second {
+            color: #95a5a6;
+        }
+        
+        .result-position.third {
+            color: #cd7f32;
+        }
+        
+        .result-candidate-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .result-candidate-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .result-candidate-info {
+            flex-grow: 1;
+        }
+        
+        .result-candidate-info h3 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+            font-size: 1.4em;
+        }
+        
+        .result-party {
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .result-description {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .result-votes {
+            text-align: right;
+            min-width: 120px;
+        }
+        
+        .vote-count {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .vote-percentage {
+            color: #3498db;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+        
+        .winner-crown {
+            color: #f1c40f;
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+        
+        .no-votes {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            margin: 40px 0;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 0 auto 30px auto;
+            display: block;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .navigation-links {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .navigation-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .navigation-links a:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="results-container">
+            <header class="header" style="text-align: center; margin-bottom: 30px;">
+                <h1>📊 Election Results</h1>
+                <p class="subtitle">Live voting results for the 2024 elections</p>
+            </header>
+            
+            <div class="results-summary">
+                <h2>🗳️ Voting Results</h2>
+                <p id="lastUpdated">Loading...</p>
+            </div>
+            
+            <div class="vote-stats" id="voteStats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalVotes">-</div>
+                    <div class="stat-label">Total Votes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCandidates">-</div>
+                    <div class="stat-label">Candidates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="participationRate">-</div>
+                    <div class="stat-label">Participation</div>
+                </div>
+            </div>
+            
+            <button class="refresh-btn" id="refreshBtn" onclick="loadResults()">
+                🔄 Refresh Results
+            </button>
+            
+            <div class="results-chart">
+                <h3 class="chart-title">🏆 Election Results Ranking</h3>
+                <div id="resultsLoading" class="loading">Loading results...</div>
+                <div class="results-list" id="resultsList" style="display: none;">
+                    <!-- Results will be loaded here -->
+                </div>
+                <div id="noVotes" class="no-votes" style="display: none;">
+                    📭 No votes have been cast yet.<br>
+                    <a href="/vote">Be the first to vote!</a>
+                </div>
+            </div>
+            
+            <div class="navigation-links">
+                <a href="/">🏠 View Candidates</a>
+                <a href="/login">👤 Login</a>
+                <a href="/vote">🗳️ Vote Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let results = [];
+        let totalVotes = 0;
+
+        // Load results when page loads
+        window.addEventListener('load', function() {
+            loadResults();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(loadResults, 30000);
+        });
+
+        async function loadResults() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            const resultsLoading = document.getElementById('resultsLoading');
+            const resultsList = document.getElementById('resultsList');
+            const noVotes = document.getElementById('noVotes');
+            
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = '🔄 Loading...';
+            resultsLoading.style.display = 'block';
+            resultsList.style.display = 'none';
+            noVotes.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/results');
+                const data = await response.json();
+                
+                results = data.results;
+                totalVotes = data.totalVotes;
+                
+                updateStats();
+                renderResults();
+                
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${new Date().toLocaleString()}`;
+                
+            } catch (error) {
+                console.error('Error loading results:', error);
+                resultsLoading.innerHTML = '<div style="color: #e74c3c;">❌ Failed to load results. Please try again.</div>';
+            } finally {
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = '🔄 Refresh Results';
+                resultsLoading.style.display = 'none';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalVotes').textContent = totalVotes;
+            document.getElementById('totalCandidates').textContent = results.length;
+            
+            // Calculate participation rate (assuming 1000 eligible voters for demo)
+            const eligibleVoters = 1000;
+            const participationRate = totalVotes > 0 ? ((totalVotes / eligibleVoters) * 100).toFixed(1) : 0;
+            document.getElementById('participationRate').textContent = participationRate + '%';
+        }
+
+        function renderResults() {
+            const resultsList = document.getElementById('resultsList');
+            const noVotes = document.getElementById('noVotes');
+            
+            if (totalVotes === 0) {
+                noVotes.style.display = 'block';
+                return;
+            }
+            
+            resultsList.innerHTML = results.map((result, index) => {
+                const position = index + 1;
+                const isWinner = position === 1 && result.votes > 0;
+                
+                let positionClass = '';
+                let positionIcon = '';
+                
+                if (position === 1) {
+                    positionClass = 'first';
+                    positionIcon = '🥇';
+                } else if (position === 2) {
+                    positionClass = 'second';
+                    positionIcon = '🥈';
+                } else if (position === 3) {
+                    positionClass = 'third';
+                    positionIcon = '🥉';
+                } else {
+                    positionIcon = position;
+                }
+                
+                return `
+                    <div class="result-item ${isWinner ? 'winner' : ''}">
+                        <div class="result-position ${positionClass}">
+                            ${positionIcon}
+                        </div>
+                        <div class="result-candidate-image">
+                            <img src="https://picsum.photos/seed/${result.candidate.name.replace(' ', '')}/300/300" alt="${result.candidate.name}">
+                        </div>
+                        <div class="result-candidate-info">
+                            <h3>
+                                ${result.candidate.name}
+                                ${isWinner ? '<span class="winner-crown">👑</span>' : ''}
+                            </h3>
+                            <div class="result-party">${result.candidate.party}</div>
+                            <div class="result-description">${result.candidate.description}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${result.percentage}%"></div>
+                            </div>
+                        </div>
+                        <div class="result-votes">
+                            <div class="vote-count">${result.votes}</div>
+                            <div class="vote-percentage">${result.percentage}%</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            resultsList.style.display = 'flex';
+            
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach((bar, index) => {
+                    bar.style.width = results[index].percentage + '%';
+                });
+            }, 100);
+        }
+
+        // Check if user is logged in and has voted
+        window.addEventListener('load', function() {
+            const voter = JSON.parse(localStorage.getItem('voter') || '{}');
+            if (voter.cnp) {
+                // Check vote status and show message
+                fetch(`/api/vote-status/${voter.cnp}`)
+                    .then(response => response.json())
+                    .then(status => {
+                        if (status.hasVoted) {
+                            const welcomeMessage = document.createElement('div');
+                            welcomeMessage.innerHTML = `
+                                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                                    <strong>✅ Thank you for voting, ${voter.name}!</strong><br>
+                                    Your vote for <strong>${status.candidate.name}</strong> has been recorded.
+                                </div>
+                            `;
+                            document.querySelector('.results-summary').after(welcomeMessage);
+                        }
+                    })
+                    .catch(error => console.error('Error checking vote status:', error));
+            }
+        });
+    </script>
+</body>
+</html> 

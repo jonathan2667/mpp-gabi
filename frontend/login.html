@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Political Voting System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input {
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .login-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            background: #fdf2f2;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            margin-top: 10px;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            background: #f0f9f0;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+            margin-top: 10px;
+        }
+        
+        .navigation-links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .navigation-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+        
+        .navigation-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .cnp-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <header class="header" style="text-align: center; margin-bottom: 30px;">
+                <h1>🗳️ Political Voting System</h1>
+                <p class="subtitle">Enter your CNP to login or register</p>
+            </header>
+            
+            <div class="cnp-info">
+                <strong>ℹ️ CNP Information:</strong><br>
+                CNP (Cod Numeric Personal) must be exactly 13 digits.<br>
+                Example: 1234567890123
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="cnp">CNP (13 digits)</label>
+                    <input type="text" id="cnp" name="cnp" maxlength="13" pattern="\d{13}" 
+                           placeholder="Enter your 13-digit CNP" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" minlength="2" 
+                           placeholder="Enter your full name" required>
+                </div>
+                
+                <button type="submit" class="login-btn" id="loginBtn">
+                    Login / Register
+                </button>
+                
+                <div id="message"></div>
+            </form>
+            
+            <div class="navigation-links">
+                <a href="/">🏠 View Candidates</a>
+                <a href="/results">📊 View Results</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+        const loginBtn = document.getElementById('loginBtn');
+        const cnpInput = document.getElementById('cnp');
+        const nameInput = document.getElementById('name');
+
+        // CNP input validation - only allow digits
+        cnpInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0, 13);
+        });
+
+        // Handle form submission
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const cnp = cnpInput.value.trim();
+            const name = nameInput.value.trim();
+            
+            // Validate inputs
+            if (cnp.length !== 13) {
+                showMessage('CNP must be exactly 13 digits', 'error');
+                return;
+            }
+            
+            if (name.length < 2) {
+                showMessage('Name must be at least 2 characters', 'error');
+                return;
+            }
+            
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Processing...';
+            
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cnp, name })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store user data in localStorage
+                    localStorage.setItem('voter', JSON.stringify(data.user));
+                    
+                    showMessage('✅ Login successful! Redirecting to voting...', 'success');
+                    
+                    // Redirect to voting page
+                    setTimeout(() => {
+                        window.location.href = '/vote';
+                    }, 1500);
+                } else {
+                    showMessage(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Connection error. Please try again.', 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login / Register';
+            }
+        });
+
+        function showMessage(text, type) {
+            messageDiv.innerHTML = `<div class="${type}-message">${text}</div>`;
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('load', function() {
+            const voter = JSON.parse(localStorage.getItem('voter') || '{}');
+            if (voter.cnp) {
+                showMessage(`Welcome back, ${voter.name}!`, 'success');
+                cnpInput.value = voter.cnp;
+                nameInput.value = voter.name;
+            }
+        });
+    </script>
+</body>
+</html> 

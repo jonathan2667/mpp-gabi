@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote - Political Voting System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .voting-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .voter-info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .voter-info h2 {
+            margin: 0 0 10px 0;
+        }
+        
+        .voting-status {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 2px solid #e1e8ed;
+        }
+        
+        .already-voted {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .can-vote {
+            background: #fff3cd;
+            border-color: #ffeeba;
+            color: #856404;
+        }
+        
+        .candidate-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .vote-candidate-card {
+            background: white;
+            border: 3px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .vote-candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: #3498db;
+        }
+        
+        .vote-candidate-card.selected {
+            border-color: #27ae60;
+            background: #f0f9f0;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(39, 174, 96, 0.2);
+        }
+        
+        .vote-candidate-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .candidate-vote-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .candidate-vote-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .candidate-vote-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .candidate-vote-details h3 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+        
+        .candidate-vote-details .party {
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .candidate-vote-details .description {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .selection-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #27ae60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .vote-candidate-card.selected .selection-indicator {
+            display: flex;
+        }
+        
+        .vote-actions {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .vote-btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .vote-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+        
+        .vote-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .cancel-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+        
+        .cancel-btn:hover {
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+        }
+        
+        .message {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            background: #fdf2f2;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            background: #f0f9f0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .navigation-links {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .navigation-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .navigation-links a:hover {
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="voting-container">
+            <header class="header" style="text-align: center; margin-bottom: 30px;">
+                <h1>🗳️ Political Voting System</h1>
+                <p class="subtitle">Choose your candidate for the 2024 elections</p>
+            </header>
+            
+            <div class="voter-info" id="voterInfo">
+                <h2>👤 Voter Information</h2>
+                <p id="voterDetails">Please login to vote</p>
+            </div>
+            
+            <div class="voting-status" id="votingStatus">
+                <h3>📊 Voting Status</h3>
+                <p id="statusMessage">Checking voting status...</p>
+            </div>
+            
+            <div class="candidate-selection" id="candidateSelection">
+                <!-- Candidates will be loaded here -->
+            </div>
+            
+            <div class="vote-actions" id="voteActions" style="display: none;">
+                <button class="vote-btn" id="confirmVoteBtn" disabled>
+                    ✅ Confirm Vote
+                </button>
+                <button class="cancel-btn vote-btn" id="cancelBtn">
+                    ❌ Cancel Selection
+                </button>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <div class="navigation-links">
+                <a href="/">🏠 View Candidates</a>
+                <a href="/login">👤 Login</a>
+                <a href="/results">📊 View Results</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let candidates = [];
+        let selectedCandidate = null;
+        let voter = null;
+        let hasVoted = false;
+
+        // DOM elements
+        const voterDetails = document.getElementById('voterDetails');
+        const votingStatus = document.getElementById('votingStatus');
+        const statusMessage = document.getElementById('statusMessage');
+        const candidateSelection = document.getElementById('candidateSelection');
+        const voteActions = document.getElementById('voteActions');
+        const confirmVoteBtn = document.getElementById('confirmVoteBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const messageDiv = document.getElementById('message');
+
+        // Initialize the page
+        window.addEventListener('load', async function() {
+            voter = JSON.parse(localStorage.getItem('voter') || '{}');
+            
+            if (!voter.cnp) {
+                showMessage('Please login first to vote.', 'error');
+                voterDetails.textContent = 'Not logged in';
+                statusMessage.textContent = 'Please login to participate in voting';
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+                return;
+            }
+            
+            voterDetails.innerHTML = `
+                <strong>${voter.name}</strong><br>
+                CNP: ${voter.cnp}
+            `;
+            
+            await loadCandidates();
+            await checkVotingStatus();
+        });
+
+        async function loadCandidates() {
+            try {
+                const response = await fetch('/candidates');
+                candidates = await response.json();
+                renderCandidates();
+            } catch (error) {
+                console.error('Error loading candidates:', error);
+                showMessage('Failed to load candidates. Please try again.', 'error');
+            }
+        }
+
+        async function checkVotingStatus() {
+            try {
+                const response = await fetch(`/api/vote-status/${voter.cnp}`);
+                const status = await response.json();
+                
+                if (status.hasVoted) {
+                    hasVoted = true;
+                    votingStatus.className = 'voting-status already-voted';
+                    statusMessage.innerHTML = `
+                        <strong>✅ You have already voted!</strong><br>
+                        Your vote: <strong>${status.candidate.name}</strong> (${status.candidate.party})<br>
+                        Voted on: ${new Date(status.votedAt).toLocaleString()}
+                    `;
+                    
+                    // Disable all candidate cards
+                    document.querySelectorAll('.vote-candidate-card').forEach(card => {
+                        card.classList.add('disabled');
+                    });
+                    
+                    voteActions.style.display = 'none';
+                } else {
+                    hasVoted = false;
+                    votingStatus.className = 'voting-status can-vote';
+                    statusMessage.innerHTML = `
+                        <strong>🗳️ You can vote!</strong><br>
+                        Select a candidate below and confirm your vote.
+                    `;
+                }
+            } catch (error) {
+                console.error('Error checking vote status:', error);
+                statusMessage.textContent = 'Error checking voting status';
+            }
+        }
+
+        function renderCandidates() {
+            candidateSelection.innerHTML = candidates.map(candidate => `
+                <div class="vote-candidate-card" data-id="${candidate.id}" onclick="selectCandidate(${candidate.id})">
+                    <div class="selection-indicator">✓</div>
+                    <div class="candidate-vote-info">
+                        <div class="candidate-vote-image">
+                            <img src="https://picsum.photos/seed/${candidate.name.replace(' ', '')}/300/300" alt="${candidate.name}">
+                        </div>
+                        <div class="candidate-vote-details">
+                            <h3>${candidate.name}</h3>
+                            <div class="party">${candidate.party}</div>
+                            <div class="description">${candidate.description}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectCandidate(candidateId) {
+            if (hasVoted) return;
+            
+            // Remove previous selection
+            document.querySelectorAll('.vote-candidate-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select new candidate
+            const selectedCard = document.querySelector(`[data-id="${candidateId}"]`);
+            selectedCard.classList.add('selected');
+            
+            selectedCandidate = candidates.find(c => c.id === candidateId);
+            confirmVoteBtn.disabled = false;
+            confirmVoteBtn.textContent = `✅ Vote for ${selectedCandidate.name}`;
+            
+            voteActions.style.display = 'block';
+        }
+
+        // Confirm vote
+        confirmVoteBtn.addEventListener('click', async function() {
+            if (!selectedCandidate || hasVoted) return;
+            
+            const confirmed = confirm(`Are you sure you want to vote for ${selectedCandidate.name} (${selectedCandidate.party})?\n\nThis action cannot be undone!`);
+            
+            if (!confirmed) return;
+            
+            confirmVoteBtn.disabled = true;
+            confirmVoteBtn.textContent = 'Processing...';
+            
+            try {
+                const response = await fetch('/api/vote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cnp: voter.cnp,
+                        candidateId: selectedCandidate.id
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`🎉 Vote successfully cast for ${result.candidate.name}!`, 'success');
+                    
+                    // Update status
+                    hasVoted = true;
+                    votingStatus.className = 'voting-status already-voted';
+                    statusMessage.innerHTML = `
+                        <strong>✅ Vote cast successfully!</strong><br>
+                        Your vote: <strong>${result.candidate.name}</strong> (${result.candidate.party})
+                    `;
+                    
+                    // Disable voting interface
+                    document.querySelectorAll('.vote-candidate-card').forEach(card => {
+                        card.classList.add('disabled');
+                    });
+                    voteActions.style.display = 'none';
+                    
+                    // Redirect to results after delay
+                    setTimeout(() => {
+                        window.location.href = '/results';
+                    }, 3000);
+                } else {
+                    showMessage(result.error || 'Failed to cast vote', 'error');
+                    confirmVoteBtn.disabled = false;
+                    confirmVoteBtn.textContent = `✅ Vote for ${selectedCandidate.name}`;
+                }
+            } catch (error) {
+                console.error('Vote error:', error);
+                showMessage('Connection error. Please try again.', 'error');
+                confirmVoteBtn.disabled = false;
+                confirmVoteBtn.textContent = `✅ Vote for ${selectedCandidate.name}`;
+            }
+        });
+
+        // Cancel selection
+        cancelBtn.addEventListener('click', function() {
+            document.querySelectorAll('.vote-candidate-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            selectedCandidate = null;
+            confirmVoteBtn.disabled = true;
+            confirmVoteBtn.textContent = '✅ Confirm Vote';
+            voteActions.style.display = 'none';
+        });
+
+        function showMessage(text, type) {
+            messageDiv.innerHTML = `<div class="${type}-message">${text}</div>`;
+        }
+    </script>
+</body>
+</html> 
