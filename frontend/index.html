@@ -4,15 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MPP Exam Template</title>
+    <title>Political Candidates 2024</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="container">
-        <h1>test</h1>
+        <header class="header">
+            <h1>Political Candidates 2024</h1>
+            <p class="subtitle">Meet the candidates running for office</p>
+            <div class="controls">
+                <button id="startBtn" onclick="startRealTime()">Start Real-Time</button>
+                <button id="stopBtn" onclick="stopRealTime()">Stop</button>
+            </div>
+            <div id="chart"></div>
+        </header>
+
+        <div class="console-logs" id="consoleLogs">
+            <h3>📝 Live Console</h3>
+            <div class="logs-container" id="logsContainer"></div>
+        </div>
+
+        <div class="candidates-grid" id="candidatesGrid">
+            <!-- Candidates will be dynamically loaded here -->
+        </div>
     </div>
 
+    <script>
+        const backendUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://your-backend-app.onrender.com';
+        document.write('<script src="' + backendUrl + '/socket.io/socket.io.js"><\/script>');
+    </script>
     <script src="script.js"></script>
 </body>
 
