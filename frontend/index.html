@@ -4,14 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Political Candidates 2024</title>
+    <title>Jonathan's Political Candidates 2024</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .navbar {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .navbar-brand {
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            font-weight: 500;
+        }
+        .navbar-nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .navbar-nav a.active {
+            background: #3498db;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🗳️ Jonathan's Political Candidates 2024</a>
+            <ul class="navbar-nav">
+                <li><a href="/" class="active">🏠 Candidates</a></li>
+                <li><a href="/login">👤 Login</a></li>
+                <li><a href="/vote">🗳️ Vote</a></li>
+                <li><a href="/results">📊 Results</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
         <header class="header">
-            <h1>Political Candidates 2024</h1>
+            <h1>Jonathan's Political Candidates 2024</h1>
             <p class="subtitle">Meet the candidates running for office</p>
             
             <!-- Navigation Links -->
