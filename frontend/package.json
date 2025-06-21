@@ -4,7 +4,7 @@
     "description": "Frontend Template",
     "main": "index.html",
     "scripts": {
-        "start": "npx http-server . -p 8081 -c-1 --cors -a localhost",
+        "start": "npx http-server . -p ${PORT:-8081} -c-1 --cors -a 0.0.0.0",
         "dev": "npx http-server . -p 8081 -c-1 --cors -o",
         "build": "echo 'No build process needed for vanilla JS frontend'",
         "test": "echo \"Error: no test specified\" && exit 1"
