@@ -289,6 +289,59 @@
             font-size: 1.2em;
             margin: 40px 0;
         }
+        
+        .turul2-section {
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .turul2-candidates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .turul2-candidate {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid #f1c40f;
+        }
+        
+        .turul2-candidate img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 4px solid #f1c40f;
+        }
+        
+        .turul2-candidate h4 {
+            color: #2c3e50;
+            margin: 0 0 5px 0;
+            font-size: 1.3em;
+        }
+        
+        .turul2-candidate .party {
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .turul2-candidate .votes {
+            background: #f1c40f;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -337,6 +390,10 @@
                 🔄 Refresh Results
             </button>
             
+            <button class="refresh-btn" id="simulateBtn" onclick="simulateElection()" style="background: linear-gradient(135deg, #e74c3c, #c0392b); margin-left: 10px;">
+                🎲 Simulate Turul 1 (100 voters)
+            </button>
+            
             <div class="results-chart">
                 <h3 class="chart-title">🏆 Election Results Ranking</h3>
                 <div id="resultsLoading" class="loading">Loading results...</div>
@@ -346,6 +403,13 @@
                 <div id="noVotes" class="no-votes" style="display: none;">
                     📭 No votes have been cast yet.<br>
                     <a href="/vote">Be the first to vote!</a>
+                </div>
+                
+                <div id="turul2Section" class="turul2-section" style="display: none;">
+                    <h3 style="text-align: center; color: #2c3e50; margin: 30px 0;">🏆 Turul 2 - Final Round Candidates</h3>
+                    <div class="turul2-candidates" id="turul2Candidates">
+                        <!-- Top 2 candidates will be shown here -->
+                    </div>
                 </div>
             </div>
             
@@ -481,8 +545,92 @@
             }, 100);
         }
 
+        // Simulate election with 100 random voters
+        async function simulateElection() {
+            const simulateBtn = document.getElementById('simulateBtn');
+            simulateBtn.disabled = true;
+            simulateBtn.textContent = '🎲 Simulating...';
+            
+            try {
+                // Get current candidates
+                const response = await fetch('/candidates');
+                const candidates = await response.json();
+                
+                // Generate 100 random votes
+                const simulatedVotes = {};
+                candidates.forEach(c => simulatedVotes[c.id] = 0);
+                
+                for (let i = 0; i < 100; i++) {
+                    const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+                    simulatedVotes[randomCandidate.id]++;
+                }
+                
+                // Create results array and sort by votes
+                const simulationResults = candidates.map(candidate => ({
+                    candidate: candidate,
+                    votes: simulatedVotes[candidate.id],
+                    percentage: (simulatedVotes[candidate.id] / 100 * 100).toFixed(1)
+                })).sort((a, b) => b.votes - a.votes);
+                
+                // Get top 2 for Turul 2
+                const turul2Candidates = simulationResults.slice(0, 2);
+                
+                // Save to localStorage
+                localStorage.setItem('turul2Candidates', JSON.stringify(turul2Candidates));
+                localStorage.setItem('simulationResults', JSON.stringify(simulationResults));
+                
+                // Update display
+                results = simulationResults;
+                totalVotes = 100;
+                updateStats();
+                renderResults();
+                showTurul2Results(turul2Candidates);
+                
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = 
+                    `Simulation completed: ${new Date().toLocaleString()} (100 random votes)`;
+                    
+                console.log('🎲 Election simulation completed:', turul2Candidates);
+                
+            } catch (error) {
+                console.error('Simulation error:', error);
+                alert('Simulation failed. Please try again.');
+            } finally {
+                simulateBtn.disabled = false;
+                simulateBtn.textContent = '🎲 Simulate Turul 1 (100 voters)';
+            }
+        }
+        
+        // Show Turul 2 results
+        function showTurul2Results(turul2Candidates) {
+            const turul2Section = document.getElementById('turul2Section');
+            const turul2Container = document.getElementById('turul2Candidates');
+            
+            turul2Container.innerHTML = turul2Candidates.map((result, index) => `
+                <div class="turul2-candidate">
+                    <img src="https://picsum.photos/seed/${result.candidate.name.replace(' ', '')}/300/300" alt="${result.candidate.name}">
+                    <h4>${result.candidate.name}</h4>
+                    <div class="party">${result.candidate.party}</div>
+                    <div class="votes">${result.votes} votes (${result.percentage}%)</div>
+                    <p style="color: #7f8c8d; margin-top: 10px; font-size: 0.9em;">${result.candidate.description}</p>
+                    <div style="margin-top: 15px;">
+                        ${index === 0 ? '🥇 First Place' : '🥈 Second Place'}
+                    </div>
+                </div>
+            `).join('');
+            
+            turul2Section.style.display = 'block';
+        }
+        
         // Check if user is logged in and has voted
         window.addEventListener('load', function() {
+            // Check for existing simulation results
+            const savedTurul2 = localStorage.getItem('turul2Candidates');
+            if (savedTurul2) {
+                const turul2Candidates = JSON.parse(savedTurul2);
+                showTurul2Results(turul2Candidates);
+            }
+            
             const voter = JSON.parse(localStorage.getItem('voter') || '{}');
             if (voter.cnp) {
                 // Check vote status and show message
