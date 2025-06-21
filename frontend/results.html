@@ -545,25 +545,164 @@
             }, 100);
         }
 
+        // Fake news that influence voting decisions
+        const fakeNewsData = {
+            "Elena Popescu": [
+                "Popescu will give free cars to all citizens",
+                "Popescu promises to make Romania the richest country in Europe",
+                "Popescu will eliminate all taxes for families",
+                "Popescu plans to build a tunnel to America"
+            ],
+            "Mihai Ionescu": [
+                "Ionescu will give every citizen a million euros",
+                "Ionescu promises free internet and phones for life",
+                "Ionescu will make all education completely free",
+                "Ionescu plans to turn Romania into a tech paradise"
+            ],
+            "Ana Georgescu": [
+                "Georgescu will arrest all corrupt politicians instantly",
+                "Georgescu promises to solve all crime in 30 days",
+                "Georgescu will give free legal services to everyone",
+                "Georgescu plans to make all lawyers work for free"
+            ],
+            "Gheorghe Marinescu": [
+                "Marinescu will cure all diseases with magic medicine",
+                "Marinescu promises free healthcare in luxury hospitals",
+                "Marinescu will make everyone live to 150 years old",
+                "Marinescu plans to give free plastic surgery to all"
+            ],
+            "Carmen Stanescu": [
+                "Stanescu will make all food organic and free",
+                "Stanescu promises to plant trees that grow money",
+                "Stanescu will eliminate all pollution in one week",
+                "Stanescu plans to make animals talk to humans"
+            ],
+            "Radu Radulescu": [
+                "Radulescu will make all businesses give free products",
+                "Radulescu promises to eliminate work - robots do everything",
+                "Radulescu will make everyone a millionaire entrepreneur",
+                "Radulescu plans to give free vacations every month"
+            ]
+        };
+
+        // Generate random CNP
+        function generateRandomCNP() {
+            let cnp = '';
+            for (let i = 0; i < 13; i++) {
+                cnp += Math.floor(Math.random() * 10);
+            }
+            return cnp;
+        }
+
+        // Generate random name
+        function generateRandomName() {
+            const firstNames = ['Ion', 'Maria', 'Gheorghe', 'Ana', 'Vasile', 'Elena', 'Nicolae', 'Ioana', 'Constantin', 'Mihaela', 'Stefan', 'Adriana', 'Andrei', 'Carmen', 'Daniel'];
+            const lastNames = ['Popescu', 'Ionescu', 'Stoica', 'Dumitrescu', 'Georgescu', 'Radu', 'Diaconu', 'Marin', 'Florescu', 'Constantinescu', 'Stan', 'Toma', 'Ilie', 'Mocanu', 'Barbu'];
+            
+            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            return `${firstName} ${lastName}`;
+        }
+
+        // Create simulation log container
+        function createSimulationLog() {
+            let logContainer = document.getElementById('simulationLog');
+            if (!logContainer) {
+                logContainer = document.createElement('div');
+                logContainer.id = 'simulationLog';
+                logContainer.style.cssText = `
+                    background: #f8f9fa;
+                    border: 1px solid #dee2e6;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin: 20px 0;
+                    max-height: 400px;
+                    overflow-y: auto;
+                    font-family: monospace;
+                    font-size: 12px;
+                    line-height: 1.4;
+                `;
+                
+                const logHeader = document.createElement('h3');
+                logHeader.textContent = '📊 Live Simulation Log - How Fake News Influences Voting';
+                logHeader.style.cssText = 'margin: 0 0 15px 0; color: #2c3e50; font-family: sans-serif;';
+                
+                const logContent = document.createElement('div');
+                logContent.id = 'logContent';
+                
+                logContainer.appendChild(logHeader);
+                logContainer.appendChild(logContent);
+                
+                // Insert after the simulate button
+                const simulateBtn = document.getElementById('simulateBtn');
+                simulateBtn.parentNode.insertBefore(logContainer, simulateBtn.nextSibling);
+            }
+            return logContainer;
+        }
+
+        // Add log entry
+        function addLogEntry(message, color = '#333') {
+            const logContent = document.getElementById('logContent');
+            const entry = document.createElement('div');
+            entry.style.cssText = `color: ${color}; margin-bottom: 5px;`;
+            entry.textContent = message;
+            logContent.appendChild(entry);
+            
+            // Auto-scroll to bottom
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
         // Simulate election with 100 random voters
         async function simulateElection() {
             const simulateBtn = document.getElementById('simulateBtn');
             simulateBtn.disabled = true;
             simulateBtn.textContent = '🎲 Simulating...';
             
+            // Create simulation log
+            createSimulationLog();
+            document.getElementById('logContent').innerHTML = '';
+            
             try {
                 // Get current candidates
                 const response = await fetch('/candidates');
                 const candidates = await response.json();
                 
-                // Generate 100 random votes
+                // Generate 100 random votes with fake news influence
                 const simulatedVotes = {};
                 candidates.forEach(c => simulatedVotes[c.id] = 0);
                 
+                addLogEntry('🚀 Starting election simulation with 100 voters...', '#2980b9');
+                addLogEntry('📰 Each voter will be influenced by fake news...', '#e67e22');
+                addLogEntry('', '#333');
+                
                 for (let i = 0; i < 100; i++) {
-                    const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
-                    simulatedVotes[randomCandidate.id]++;
+                    // Generate random voter
+                    const voterCNP = generateRandomCNP();
+                    const voterName = generateRandomName();
+                    
+                    // Select random candidate to vote for
+                    const selectedCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+                    
+                    // Get random fake news for this candidate
+                    const candidateFakeNews = fakeNewsData[selectedCandidate.name] || ["will make everything better"];
+                    const randomFakeNews = candidateFakeNews[Math.floor(Math.random() * candidateFakeNews.length)];
+                    
+                    // Record the vote
+                    simulatedVotes[selectedCandidate.id]++;
+                    
+                    // Log the voting decision
+                    const logMessage = `CNP ${voterCNP} (${voterName}) voted for ${selectedCandidate.name} because he read fake news: "${randomFakeNews}"`;
+                    addLogEntry(logMessage, '#27ae60');
+                    
+                    // Small delay to make it visible
+                    if (i % 10 === 0) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
                 }
+                
+                addLogEntry('', '#333');
+                addLogEntry('✅ Simulation completed! All 100 voters influenced by fake news.', '#e74c3c');
+                addLogEntry('📊 Calculating results...', '#8e44ad');
                 
                 // Create results array and sort by votes
                 const simulationResults = candidates.map(candidate => ({
@@ -588,12 +727,22 @@
                 
                 // Update last updated time
                 document.getElementById('lastUpdated').textContent = 
-                    `Simulation completed: ${new Date().toLocaleString()} (100 random votes)`;
+                    `Simulation completed: ${new Date().toLocaleString()} (100 voters influenced by fake news)`;
+                    
+                // Log final results
+                addLogEntry('', '#333');
+                addLogEntry('🏆 FINAL RESULTS:', '#2c3e50');
+                simulationResults.forEach((result, index) => {
+                    addLogEntry(`${index + 1}. ${result.candidate.name}: ${result.votes} votes (${result.percentage}%)`, 
+                              index < 2 ? '#f39c12' : '#7f8c8d');
+                });
+                addLogEntry(`🥇 ${turul2Candidates[0].candidate.name} and 🥈 ${turul2Candidates[1].candidate.name} advance to Turul 2!`, '#e74c3c');
                     
                 console.log('🎲 Election simulation completed:', turul2Candidates);
                 
             } catch (error) {
                 console.error('Simulation error:', error);
+                addLogEntry('❌ Simulation failed: ' + error.message, '#e74c3c');
                 alert('Simulation failed. Please try again.');
             } finally {
                 simulateBtn.disabled = false;
