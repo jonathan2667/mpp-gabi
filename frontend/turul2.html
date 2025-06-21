@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turul 2 - Jonathan's Political Candidates 2024</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .navbar-brand {
+            color: white;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+        
+        .navbar-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .navbar-nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            height: calc(100vh - 80px);
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .candidate-side {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .candidate-side.active {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .bob-side {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .alice-side {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .candidate-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .candidate-name {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .candidate-party {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .vote-percentage {
+            font-size: 4em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .vote-count {
+            text-align: center;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+        }
+        
+        .news-board {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        
+        .news-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .news-positive {
+            border-left-color: #27ae60;
+            background: rgba(39, 174, 96, 0.2);
+        }
+        
+        .news-negative {
+            border-left-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+        }
+        
+        .switch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .influence-switch {
+            position: relative;
+            width: 80px;
+            height: 40px;
+            background: #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .influence-switch.bob {
+            background: #3498db;
+        }
+        
+        .influence-switch.alice {
+            background: #e74c3c;
+        }
+        
+        .switch-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .influence-switch.alice .switch-handle {
+            transform: translateX(40px);
+        }
+        
+        .switch-label {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .live-stats {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+        
+        .total-votes {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .voting-speed {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .winner-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f39c12;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .winner-indicator.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🏆 Turul 2 - Final Round</a>
+            <ul class="navbar-nav">
+                <li><a href="/">🏠 Candidates</a></li>
+                <li><a href="/news">📰 News</a></li>
+                <li><a href="/results">📊 Turul 1 Results</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Bob's Side -->
+        <div class="candidate-side bob-side" id="bobSide">
+            <div class="winner-indicator" id="bobWinner">👑 LEADING</div>
+            <div class="candidate-header">
+                <div class="candidate-name">BOB</div>
+                <div class="candidate-party">Democratic Progress Party</div>
+            </div>
+            
+            <div class="vote-percentage" id="bobPercentage">50.0%</div>
+            <div class="vote-count" id="bobVotes">5000 votes</div>
+            
+            <h3 style="margin-bottom: 15px;">📰 Latest News</h3>
+            <div class="news-board" id="bobNews">
+                <!-- News will be dynamically added -->
+            </div>
+        </div>
+
+        <!-- Switch Container -->
+        <div class="switch-container">
+            <div class="switch-label">MEDIA INFLUENCE</div>
+            <div class="influence-switch bob" id="influenceSwitch" onclick="toggleInfluence()">
+                <div class="switch-handle"></div>
+            </div>
+            <div class="live-stats">
+                <div class="total-votes" id="totalVotes">10,000 Total Voters</div>
+                <div class="voting-speed" id="votingSpeed">Voting in progress...</div>
+            </div>
+        </div>
+
+        <!-- Alice's Side -->
+        <div class="candidate-side alice-side" id="aliceSide">
+            <div class="winner-indicator" id="aliceWinner">👑 LEADING</div>
+            <div class="candidate-header">
+                <div class="candidate-name">ALICE</div>
+                <div class="candidate-party">National Unity Alliance</div>
+            </div>
+            
+            <div class="vote-percentage" id="alicePercentage">50.0%</div>
+            <div class="vote-count" id="aliceVotes">5000 votes</div>
+            
+            <h3 style="margin-bottom: 15px;">📰 Latest News</h3>
+            <div class="news-board" id="aliceNews">
+                <!-- News will be dynamically added -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentInfluence = 'bob'; // bob or alice
+        let bobVotes = 5000;
+        let aliceVotes = 5000;
+        let totalVoters = 10000;
+        let votingActive = true;
+        
+        // News data
+        const newsData = {
+            bob: {
+                positive: [
+                    "Bob's economic plan receives praise from leading economists",
+                    "International leaders endorse Bob's foreign policy vision",
+                    "Bob's healthcare reform gets overwhelming public support",
+                    "Major unions announce backing for Bob's worker protection laws",
+                    "Bob's education initiative promises free university for all",
+                    "Environmental groups praise Bob's green energy transition plan",
+                    "Bob's anti-corruption measures gain cross-party support",
+                    "Tech industry leaders invest billions after Bob's speech"
+                ],
+                negative: [
+                    "Alice's campaign faces corruption allegations from whistleblower",
+                    "Alice's economic policies criticized by independent experts",
+                    "Alice's past voting record on healthcare raises concerns",
+                    "Investigation launched into Alice's campaign financing",
+                    "Alice's stance on education funding faces teacher opposition",
+                    "Environmental activists protest Alice's industrial policies",
+                    "Alice's foreign policy decisions questioned by diplomats",
+                    "Alice's tax plan would hurt middle-class families, study shows"
+                ]
+            },
+            alice: {
+                positive: [
+                    "Alice's infrastructure plan creates thousands of new jobs",
+                    "Alice receives endorsement from Nobel Prize winners",
+                    "Alice's digital innovation strategy attracts tech giants",
+                    "Alice's social programs reduce poverty by 30% in pilot areas",
+                    "Alice's defense strategy ensures national security experts",
+                    "Alice's climate action plan exceeds international standards",
+                    "Alice's judicial reforms receive bar association approval",
+                    "Alice's small business support creates economic boom"
+                ],
+                negative: [
+                    "Bob's controversial statements spark nationwide protests",
+                    "Bob's economic promises deemed 'unrealistic' by analysts",
+                    "Bob's healthcare plan would cut services, doctors warn",
+                    "Ethics committee investigates Bob's business connections",
+                    "Bob's education cuts threaten rural school closures",
+                    "Bob's environmental record disappoints green voters",
+                    "Bob's foreign policy isolates key international allies",
+                    "Bob's tax increases would harm working families"
+                ]
+            }
+        };
+        
+        function toggleInfluence() {
+            const switchElement = document.getElementById('influenceSwitch');
+            const bobSide = document.getElementById('bobSide');
+            const aliceSide = document.getElementById('aliceSide');
+            
+            if (currentInfluence === 'bob') {
+                currentInfluence = 'alice';
+                switchElement.className = 'influence-switch alice';
+                bobSide.classList.remove('active');
+                aliceSide.classList.add('active');
+            } else {
+                currentInfluence = 'bob';
+                switchElement.className = 'influence-switch bob';
+                aliceSide.classList.remove('active');
+                bobSide.classList.add('active');
+            }
+            
+            console.log(`📺 Media influence switched to: ${currentInfluence.toUpperCase()}`);
+        }
+        
+        function addNews(candidate, type, message) {
+            const newsBoard = document.getElementById(`${candidate}News`);
+            const newsItem = document.createElement('div');
+            newsItem.className = `news-item news-${type}`;
+            newsItem.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">${type === 'positive' ? '✅' : '❌'} Breaking News</div>
+                <div>${message}</div>
+                <div style="font-size: 0.8em; opacity: 0.7; margin-top: 5px;">${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            newsBoard.insertBefore(newsItem, newsBoard.firstChild);
+            
+            // Keep only last 5 news items
+            if (newsBoard.children.length > 5) {
+                newsBoard.removeChild(newsBoard.lastChild);
+            }
+        }
+        
+        function updateVotes() {
+            if (!votingActive) return;
+            
+            // Simulate voting based on current influence
+            const remainingVoters = totalVoters - bobVotes - aliceVotes;
+            if (remainingVoters <= 0) {
+                votingActive = false;
+                document.getElementById('votingSpeed').textContent = 'Voting completed!';
+                return;
+            }
+            
+            // Add votes based on influence (more likely to vote for influenced candidate)
+            const votesToAdd = Math.min(Math.floor(Math.random() * 50) + 10, remainingVoters);
+            
+            if (currentInfluence === 'bob') {
+                // 70% chance for Bob, 30% for Alice when Bob is influenced
+                const bobNewVotes = Math.floor(votesToAdd * (0.7 + Math.random() * 0.2));
+                const aliceNewVotes = votesToAdd - bobNewVotes;
+                bobVotes += bobNewVotes;
+                aliceVotes += aliceNewVotes;
+            } else {
+                // 70% chance for Alice, 30% for Bob when Alice is influenced
+                const aliceNewVotes = Math.floor(votesToAdd * (0.7 + Math.random() * 0.2));
+                const bobNewVotes = votesToAdd - aliceNewVotes;
+                bobVotes += bobNewVotes;
+                aliceVotes += aliceNewVotes;
+            }
+            
+            // Update display
+            const totalCounted = bobVotes + aliceVotes;
+            const bobPercentage = ((bobVotes / totalCounted) * 100).toFixed(1);
+            const alicePercentage = ((aliceVotes / totalCounted) * 100).toFixed(1);
+            
+            document.getElementById('bobPercentage').textContent = `${bobPercentage}%`;
+            document.getElementById('alicePercentage').textContent = `${alicePercentage}%`;
+            document.getElementById('bobVotes').textContent = `${bobVotes.toLocaleString()} votes`;
+            document.getElementById('aliceVotes').textContent = `${aliceVotes.toLocaleString()} votes`;
+            document.getElementById('totalVotes').textContent = `${totalCounted.toLocaleString()} / ${totalVoters.toLocaleString()} Votes Counted`;
+            document.getElementById('votingSpeed').textContent = `+${votesToAdd} votes/second`;
+            
+            // Update winner indicators
+            const bobWinner = document.getElementById('bobWinner');
+            const aliceWinner = document.getElementById('aliceWinner');
+            
+            if (bobVotes > aliceVotes) {
+                bobWinner.classList.add('show');
+                aliceWinner.classList.remove('show');
+            } else if (aliceVotes > bobVotes) {
+                aliceWinner.classList.add('show');
+                bobWinner.classList.remove('show');
+            } else {
+                bobWinner.classList.remove('show');
+                aliceWinner.classList.remove('show');
+            }
+        }
+        
+        function generateNews() {
+            if (Math.random() < 0.7) { // 70% chance to generate news
+                const candidate = Math.random() < 0.5 ? 'bob' : 'alice';
+                
+                if (currentInfluence === 'bob') {
+                    // Generate positive news for Bob, negative for Alice
+                    if (candidate === 'bob') {
+                        const news = newsData.bob.positive[Math.floor(Math.random() * newsData.bob.positive.length)];
+                        addNews('bob', 'positive', news);
+                    } else {
+                        const news = newsData.bob.negative[Math.floor(Math.random() * newsData.bob.negative.length)];
+                        addNews('alice', 'negative', news);
+                    }
+                } else {
+                    // Generate positive news for Alice, negative for Bob
+                    if (candidate === 'alice') {
+                        const news = newsData.alice.positive[Math.floor(Math.random() * newsData.alice.positive.length)];
+                        addNews('alice', 'positive', news);
+                    } else {
+                        const news = newsData.alice.negative[Math.floor(Math.random() * newsData.alice.negative.length)];
+                        addNews('bob', 'negative', news);
+                    }
+                }
+            }
+        }
+        
+        // Initialize
+        document.getElementById('bobSide').classList.add('active');
+        
+        // Start simulation
+        setInterval(updateVotes, 1000); // Update votes every second
+        setInterval(generateNews, 3000); // Generate news every 3 seconds
+        
+        // Initial news
+        addNews('bob', 'positive', "Bob's campaign kicks off with massive rally in Bucharest");
+        addNews('alice', 'positive', "Alice promises new era of transparency and progress");
+        
+        console.log('🏆 Turul 2 simulation started!');
+        console.log('🔄 Use the switch to change media influence and watch voting patterns change!');
+    </script>
+</body>
+</html> 

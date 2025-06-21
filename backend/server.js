@@ -238,6 +238,11 @@ app.get('/news', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/news.html'));
 });
 
+// Serve turul 2 page
+app.get('/turul2', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/turul2.html'));
+});
+
 io.on('connection', (socket) => {
     console.log('✅ Client connected:', socket.id);
     socket.emit('update', { candidates, chart: getPartyCounts() });
