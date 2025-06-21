@@ -1,0 +1,25 @@
+{
+    "name": "frontend",
+    "version": "1.0.0",
+    "description": "Frontend Template",
+    "main": "index.html",
+    "scripts": {
+        "start": "npx http-server . -p 8081 -c-1 --cors -a localhost",
+        "dev": "npx http-server . -p 8081 -c-1 --cors -o",
+        "build": "echo 'No build process needed for vanilla JS frontend'",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "frontend",
+        "vanilla-js"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.2",
+        "http-server": "^14.1.1"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
