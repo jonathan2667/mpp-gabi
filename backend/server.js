@@ -16,29 +16,6 @@ db.initDatabase();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// Serve static files from frontend directory
-app.use(express.static('../frontend'));
-
-// Root route - serve the main page
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-// Serve login page
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/login.html'));
-});
-
-// Serve voting page
-app.get('/vote', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/vote.html'));
-});
-
-// Serve results page
-app.get('/results', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/results.html'));
-});
-
 // Handle favicon.ico request (prevent 404)
 app.get('/favicon.ico', (req, res) => {
     res.status(204).end();
@@ -229,6 +206,31 @@ app.get('/api/results', async (req, res) => {
         console.error('Results error:', error);
         res.status(500).json({ error: 'Failed to get results' });
     }
+});
+
+// === STATIC FILE SERVING (MUST BE AFTER API ROUTES) ===
+
+// Serve static files from frontend directory
+app.use(express.static('../frontend'));
+
+// Root route - serve the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// Serve login page
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/login.html'));
+});
+
+// Serve voting page
+app.get('/vote', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/vote.html'));
+});
+
+// Serve results page
+app.get('/results', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/results.html'));
 });
 
 io.on('connection', (socket) => {
