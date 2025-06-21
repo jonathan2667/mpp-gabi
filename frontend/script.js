@@ -115,9 +115,25 @@ function getAllCandidates() {
     return [...candidates]; // Return a copy to prevent external modifications
 }
 
+// Load initial candidates from API
+async function loadInitialCandidates() {
+    try {
+        const response = await fetch('/candidates');
+        const data = await response.json();
+        candidates = data;
+        renderCandidates();
+        console.log('✅ Initial candidates loaded:', candidates.length);
+    } catch (error) {
+        console.error('❌ Failed to load candidates:', error);
+    }
+}
+
 // Initialize application when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Political Candidates App loaded - Connecting to backend...');
+    
+    // Load initial candidates first
+    loadInitialCandidates();
     
     // Initialize socket connection
     setTimeout(() => {

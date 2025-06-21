@@ -20,6 +20,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
+// Handle favicon.ico request (prevent 404)
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end();
+});
+
 // Candidates data in memory  
 let candidates = [
     {id: 1, name: "Elena Popescu", party: "PDL", description: "Experienced politician"},
