@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -10,6 +11,14 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
+
+// Serve static files from frontend directory
+app.use(express.static('../frontend'));
+
+// Root route - serve the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 // Candidates data in memory  
 let candidates = [

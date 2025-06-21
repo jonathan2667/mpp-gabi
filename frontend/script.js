@@ -6,7 +6,7 @@ let candidates = [];
 // Initialize socket connection when available
 function initSocket() {
     if (typeof io !== 'undefined') {
-        const backendUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://your-backend-app.onrender.com';
+        const backendUrl = window.location.origin; // Same server for both frontend and backend
         socket = io(backendUrl);
         
         socket.on('connect', () => {
@@ -32,7 +32,7 @@ function initSocket() {
 }
 
 // API calls
-const getBackendUrl = () => window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://your-backend-app.onrender.com';
+const getBackendUrl = () => window.location.origin; // Same server for both frontend and backend
 
 const startRealTime = () => {
     fetch(`${getBackendUrl()}/start`, { method: 'POST' })
